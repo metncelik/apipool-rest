@@ -1,5 +1,5 @@
 export const DOMAIN = process.env.DOMAIN;
-export const SERVER_URL = process.env.SERVER_URL;
+export const REST_API_URL = process.env.REST_API_URL;
 export const CLIENT_URL = process.env.CLIENT_URL;
 export const PORT = process.env.PORT || 5003;
 export const ACCESS_SECRET = process.env.ACCESS_SECRET;

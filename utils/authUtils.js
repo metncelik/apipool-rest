@@ -36,7 +36,7 @@ const setCookies = (res, refreshToken) => {
     res.header('Access-Control-Allow-Credentials', true);
     res.cookie('refresh_token', refreshToken, {
         httpOnly: true,
-        domain: DOMAIN,
+        domain: "." + DOMAIN,
         expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
     }
 );

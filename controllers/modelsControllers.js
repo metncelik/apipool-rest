@@ -1,4 +1,4 @@
-import { SERVER_URL } from "../config.js";
+import { REST_API_URL } from "../config.js";
 import { addNewModel, getPublicModels, getFullModel, queryModels, getUserModelsByID, deleteModelByID, getModelOutputs, getModelInputs, addModelInput, addModelOutput } from "../queries/modelsQueries.js";
 import { uploadImage } from "../utils/cloudStorage.js";
 
@@ -76,7 +76,7 @@ export const addModel = async (req, res, next) => {
         const imageExtension = ".jpeg";
         
         const userId = req.user.userId;
-        model.imageURL = SERVER_URL + "/storage/" + imagePath;
+        model.imageURL = REST_API_URL + "/storage/" + imagePath;
         const modelID = await addNewModel(model, userId);
         
         await uploadImage(image, imagePath + imageExtension);

@@ -20,7 +20,7 @@ app.use(cors({
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true
 }));
-app.use(bodyParser.json({limit: "30mb"}));
+app.use(bodyParser.json({limit: "10mb"}));
 app.use(bodyParser.urlencoded({ extended: true, type: "application/json" }));
 app.use(setContentType);
 

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { v4 as uuid } from 'uuid';
-import { ACCESS_SECRET, CLIENT_URL, SERVER_URL, resetYourPasswordTemplate, verifyEmailTemplate } from '../config.js';
+import { ACCESS_SECRET, CLIENT_URL, DOMAIN, REST_API_URL, resetYourPasswordTemplate, verifyEmailTemplate } from '../config.js';
 import { createRefreshToken, hashPassword, isValidPassword, setCookies, comparePasswords } from '../utils/authUtils.js';
 import { sendEmail } from '../utils/mailService.js';
 import { getGoogleUserInfo } from '../apis/google.js';
@@ -215,7 +215,7 @@ const verifyEmail = async (req, res, next) => {
         await verifyEmailAuth(authorization);
         await deleteEmailSecretKey(authorization);
 
-        res.status(200).send({message: "Email verified."});
+        res.status(200).send({ message: "Email verified." });
     } catch (error) {
         next(error);
     }
@@ -349,7 +349,7 @@ const changePassword = async (req, res, next) => {
 
         await updatePassword(email, newHashedPassword);
 
-        res.clearCookie('refresh_token', {domain: COOKIE_DOMAIN, path: COOKIE_PATH});
+        res.clearCookie('refresh_token', { domain: DOMAIN });
         await updateRefreshToken(req.user.userId, null);
 
         res.send({ message: "Password changed." });
@@ -361,7 +361,7 @@ const changePassword = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
     try {
-        res.clearCookie('refresh_token', {domain: "localhost", path: COOKIE_PATH});
+        res.clearCookie('refresh_token', { domain: DOMAIN, httpOnly: true, });
         await updateRefreshToken(req.user.userId, null);
         res.send({ message: "Logged out." });
     } catch (error) {
