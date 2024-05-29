@@ -6,7 +6,33 @@ steps:
   entrypoint: npm
   args: ["run", "create-env"]
   env:
-    - 'SECRET_KEY=${_SECRET_KEY}'
+    - 'NODE_ENV=${_NODE_ENV}'
+    - 'REST_API_URL=${_REST_API_URL}'
+    - 'CLIENT_URL=${_CLIENT_URL}'
+    - 'PORT=${_PORT}'
+    - 'ACCESS_SECRET=${_ACCESS_SECRET}'
+    - 'REFRESH_SECRET=${_REFRESH_SECRET}'
+    - 'EMAIL_PROVIDER=${_EMAIL_PROVIDER}'
+    - 'EMAIL=${_EMAIL}'
+    - 'EMAIL_PASSWORD=${_EMAIL_PASSWORD}'
+    - 'GITHUB_CLIENT_ID=${_GITHUB_CLIENT_ID}'
+    - 'GITHUB_CLIENT_SECRET=${_GITHUB_CLIENT_SECRET}'
+    - 'GOOGLE_CLIENT_ID=${_GOOGLE_CLIENT_ID}'
+    - 'GOOGLE_CLIENT_SECRET=${_GOOGLE_CLIENT_SECRET}'
+    - 'GC_PROJECT_ID=${_GC_PROJECT_ID}'
+    - 'PG_HOST=${_PG_HOST}'
+    - 'PG_PORT=${_PG_PORT}'
+    - 'PG_USER=${_PG_USER}'
+    - 'PG_PASSWORD=${_PG_PASSWORD}'
+    - 'PG_DATABASE=${_PG_DATABASE}'
+    - 'PG_MAX_CONN=${_PG_MAX_CONN}'
+    - 'PG_IDLE=${_PG_IDLE}'
+    - 'PG_TIMEOUT=${_PG_TIMEOUT}'
+    - 'GS_PRIVATE_KEY_ID=${_GS_PRIVATE_KEY_ID}'
+    - 'GS_PRIVATE_KEY=${_GS_PRIVATE_KEY}'
+    - 'GS_CLIENT_ID=${_GS_CLIENT_ID}'
+    - 'GS_CLIENT_EMAIL=${_GS_CLIENT_EMAIL}'
+    - 'GS_CLIENT_CERT_URL=${_GS_CLIENT_CERT_URL}'
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy", "${_CONFIG_FILE}"]
 timeout: "1600s"
