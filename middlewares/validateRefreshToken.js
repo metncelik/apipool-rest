@@ -5,7 +5,7 @@ import { REFRESH_SECRET } from "../config.js";
 //for logout and refresh
 export const validateRefreshToken = async (req, res, next) => {
     try {
-        const refreshToken = req.cookies?.RefreshToken;
+        const refreshToken = req.cookies?.refresh_token;
         if (!refreshToken)
             return res.status(400).send({
                 message: "Please provide a Refresh Token.",

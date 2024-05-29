@@ -349,7 +349,7 @@ const changePassword = async (req, res, next) => {
 
         await updatePassword(email, newHashedPassword);
 
-        res.clearCookie('RefreshToken');
+        res.clearCookie('refresh_token', {domain: COOKIE_DOMAIN, path: COOKIE_PATH});
         await updateRefreshToken(req.user.userId, null);
 
         res.send({ message: "Password changed." });
@@ -361,7 +361,7 @@ const changePassword = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
     try {
-        res.clearCookie('RefreshToken');
+        res.clearCookie('refresh_token', {domain: "localhost", path: COOKIE_PATH});
         await updateRefreshToken(req.user.userId, null);
         res.send({ message: "Logged out." });
     } catch (error) {

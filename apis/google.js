@@ -1,4 +1,4 @@
-import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "../config.js";
+import { CLIENT_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "../config.js";
 import axios from "axios";
 import qs from 'querystring';
 
@@ -8,7 +8,7 @@ const getGoogleUserInfo = async (code, action) => {
         code: code,
         client_id: GOOGLE_CLIENT_ID,
         client_secret: GOOGLE_CLIENT_SECRET,
-        redirect_uri: `http://localhost:3000/oauth/google/${action}`,
+        redirect_uri: `${CLIENT_URL}/oauth/google/${action}`,
         grant_type: 'authorization_code'
     };
     const options = {

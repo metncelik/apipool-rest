@@ -45,7 +45,6 @@ const getRefreshToken = async (userId) => {
     const queryString = 'SELECT refresh_token from refresh_tokens WHERE user_id = $1';
     const values = [userId];
     const result = await pgPool.query(queryString, values);
-    console.log(result);
     return result.rows[0].refresh_token;
 }
 
@@ -163,7 +162,6 @@ const getAllAuthMethods = async (userId) => {
     const queryString = `SELECT provider, email, added_at, verified FROM emails WHERE user_id = $1`;
     const values = [userId];
     const result = await pgPool.query(queryString, values);
-    console.log("huha",result);
     return result.rows;
 }
 
