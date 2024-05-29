@@ -7,7 +7,7 @@ steps:
     args: ["run", "create-env"]
     env:
       - "NODE_ENV=${_NODE_ENV}"
-      - "DOMAIN=${_DOMAIN}"
+      - "COOKIE_DOMAIN=${_DOMAIN}"
       - "REST_API_URL=${_REST_API_URL}"
       - "CLIENT_URL=${_CLIENT_URL}"
       - "PORT=${_PORT}"

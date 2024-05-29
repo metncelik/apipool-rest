@@ -1,4 +1,4 @@
-import { CLIENT_URL, DOMAIN, REFRESH_SECRET } from "../config.js";
+import { CLIENT_URL, COOKIE_DOMAIN, REFRESH_SECRET, cookieConfig } from "../config.js";
 import { updateLoginDate, updateRefreshToken } from "../queries/authQueries.js";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -34,12 +34,7 @@ const createRefreshToken = async (payload) => {
 
 const setCookies = (res, refreshToken) => {
     res.header('Access-Control-Allow-Credentials', true);
-    res.cookie('refresh_token', refreshToken, {
-        httpOnly: true,
-        domain: "." + DOMAIN,
-        expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
-    }
-);
+    res.cookie('refresh_token', refreshToken, cookieConfig);
 }
 
 export {

@@ -1,4 +1,4 @@
-export const DOMAIN = process.env.DOMAIN;
+export const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN;
 export const REST_API_URL = process.env.REST_API_URL;
 export const CLIENT_URL = process.env.CLIENT_URL;
 export const PORT = process.env.PORT || 5003;
@@ -12,6 +12,12 @@ export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 export const PROJECT_ID = process.env.PROJECT_ID;
 export const NODE_ENV = process.env.NODE_ENV;
+
+export const cookieConfig = {
+    httpOnly: true,
+    domain: COOKIE_DOMAIN,
+    expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
+}
 
 export const pgConfig = {
     user: process.env.PG_USER,
