@@ -71,7 +71,7 @@ const login = async (req, res, next) => {
 
 const refresh = async (req, res, next) => {
     try {
-        const accessTokenOptions = { expiresIn: `15m`, }
+        const accessTokenOptions = { expiresIn: `15m` }
         const accessToken = jwt.sign(req.user, ACCESS_SECRET, accessTokenOptions);
         return res.send({ accessToken });
     } catch (error) {
@@ -289,7 +289,7 @@ const resetPassword = async (req, res, next) => {
             return res.status(401).send({ message: "Secret Key not found or expired." });
 
         await deleteEmailSecretKey(secretKey);
-        
+
 
         res.send({ message: "Password changed successfully." });
     } catch (error) {
