@@ -262,6 +262,7 @@ const sendResetPasswordMail = async (req, res, next) => {
         await updateEmailSecretKey(email, resetSecret);
         const resetURL = CLIENT_URL + `/reset-password?secretKey=${resetSecret}`;
         await sendEmail(email, "🔑 Reset your password!", resetYourPasswordTemplate(resetURL));
+        res.send({ message: "Reset password email sent." });
     }
     catch (error) {
         next(error);
@@ -288,6 +289,7 @@ const resetPassword = async (req, res, next) => {
             return res.status(401).send({ message: "Secret Key not found or expired." });
 
         await deleteEmailSecretKey(secretKey);
+        
 
         res.send({ message: "Password changed successfully." });
     } catch (error) {

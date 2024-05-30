@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { getModelImage } from "../controllers/storageControllers.js";
+import { getEndpointImage } from "../controllers/storageControllers.js";
 
 const router = Router();
 
-router.get("/models/images/:modelId", getModelImage);
+router.get("/endpoints/images/:endpointId", getEndpointImage);
 
 export default router;

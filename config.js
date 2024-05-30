@@ -49,6 +49,8 @@ export const storageConfig = {
 
 export const mailTransporterConfig = {
     service: process.env.EMAIL_PROVIDER,
+    host: "smtp.gmail.com",
+    port: 465,
     auth: {
         user: EMAIL,
         pass: EMAIL_PASSWORD

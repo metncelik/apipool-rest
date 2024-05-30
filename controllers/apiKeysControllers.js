@@ -1,4 +1,4 @@
-import { insertAPIKey, getActiveAPIKeys, revokeAPIKey } from "../queries/apiKeysQueries.js";
+import { insertAPIKey, getActiveAPIKeys, revokeAPIKey, getRecentRequests } from "../queries/apiKeysQueries.js";
 import { v4 as uuid } from "uuid";
 
 
@@ -29,7 +29,7 @@ export const addAPIKey = async (req, res, next) => {
 
         const newAPIKey = "AP1-" + uuid();
         const apiKey = await insertAPIKey(apiTitle, newAPIKey, req.user.userId);
-        res.send({ apiKey });
+        res.send({ apiKey, message: "API Key created."});
     } catch (error) {
         next(error);
     }
@@ -39,7 +39,16 @@ export const deleteAPIKey = async (req, res, next) => {
     try {
         const apiKey = req.params.apiKey;
         await revokeAPIKey(apiKey, req.user.userId);
-        res.send({ message: "API Key revoked." });
+        res.send({ message: "API Key deleted." });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getRequests = async (req, res, next) => {
+    try {
+        const recentRequests = await getRecentRequests(req.user.userId);
+        res.send({ requests: recentRequests });
     } catch (error) {
         next(error);
     }

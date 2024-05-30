@@ -21,3 +21,15 @@ export const revokeAPIKey = async (apiKey, userId) => {
     const result = await pgPool.query(query, values);
     return result.rows[0];
 };
+
+export const getRecentRequests = async (userId) => {
+    const query = `
+    SELECT r.request_id, a.title AS api_title, e.title AS endpoint_title, r.status, r.finished_at, r.started_at, r.delay_time, r.execution_time  
+    FROM recent_requests r JOIN api_keys a ON r.api_key_id = a.api_key_id JOIN endpoints e ON e.endpoint_id = r.endpoint_id 
+    WHERE a.user_id = $1
+    ORDER BY r.started_at DESC
+    `;
+    const values = [userId];
+    const result = await pgPool.query(query, values);
+    return result.rows;
+};
