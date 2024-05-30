@@ -1,4 +1,4 @@
-import { REST_API_URL } from "../config.js";
+import { X_SERVICE_URL } from "../config.js";
 import { addNewEndpoint, getPublicEndpoints, getFullEndpoint, queryEndpoints, getUserEndpointsByID, deleteEndpointByID, getEndpointOutputs, getEndpointInputs, addEndpointInput, addEndpointOutput, addEndpointProvider, addRunpodEndpoint, getRunpodAccountByEmail } from "../queries/endpointsQueries.js";
 import { uploadImage } from "../utils/cloudStorage.js";
 
@@ -76,7 +76,7 @@ export const addEndpoint = async (req, res, next) => {
         const imageExtension = ".jpeg";
 
         const userId = req.user.userId;
-        endpoint.imageURL = REST_API_URL + "/storage/" + imagePath;
+        endpoint.imageURL = X_SERVICE_URL + "/storage/" + imagePath;
         const endpointId = await addNewEndpoint(endpoint, userId);
 
         await uploadImage(image, imagePath + imageExtension);

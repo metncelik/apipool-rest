@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { v4 as uuid } from 'uuid';
-import { ACCESS_SECRET, CLIENT_URL, COOKIE_DOMAIN, REST_API_URL, resetYourPasswordTemplate, verifyEmailTemplate } from '../config.js';
+import { ACCESS_SECRET, CLIENT_URL, COOKIE_DOMAIN, X_SERVICE_URL, resetYourPasswordTemplate, verifyEmailTemplate } from '../config.js';
 import { createRefreshToken, hashPassword, isValidPassword, setCookies, comparePasswords } from '../utils/authUtils.js';
 import { sendEmail } from '../utils/mailService.js';
 import { getGoogleUserInfo } from '../apis/google.js';
@@ -39,7 +39,7 @@ const signUp = async (req, res, next) => {
         const verifyURL = CLIENT_URL + `/verify-email?secretKey=${verifySecret}`;
         await sendEmail(req.email, "🎉 Welcome to API POOL!", verifyEmailTemplate(verifyURL));
 
-        res.send({ message: "User created." });
+        res.send({ message: "User Created! Check your email for verification." });
     } catch (error) {
         next(error);
     }

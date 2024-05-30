@@ -1,4 +1,4 @@
-service: test-apipool-rest
+service: test-x
 runtime: nodejs20
 handlers:
   - url: /.*

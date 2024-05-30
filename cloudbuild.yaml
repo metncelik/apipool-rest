@@ -8,7 +8,7 @@ steps:
     env:
       - "NODE_ENV=${_NODE_ENV}"
       - "COOKIE_DOMAIN=${_COOKIE_DOMAIN}"
-      - "REST_API_URL=${_REST_API_URL}"
+      - "X_SERVICE_URL=${_X_SERVICE_URL}"
       - "CLIENT_URL=${_CLIENT_URL}"
       - "PORT=${_PORT}"
       - "ACCESS_SECRET=${_ACCESS_SECRET}"
