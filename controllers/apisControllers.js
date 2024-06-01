@@ -85,7 +85,6 @@ export const addAPI = async (req, res, next) => {
         await uploadImage(image, imagePath + imageExtension);
 
         for (const input of inputs) {
-            console.log(input);
             await addAPIInput(apiId, input);
         }
 
@@ -94,7 +93,6 @@ export const addAPI = async (req, res, next) => {
         }
 
         for (const provider of providers) {
-            console.log("huhuu",provider);
             const apiProviderId = await addAPIProvider(apiId, provider.title)
             if (provider.title === "runpod") {
                 const rpAccounts = await getRunpodAccountByEmail(provider.email);

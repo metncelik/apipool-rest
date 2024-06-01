@@ -182,9 +182,7 @@ const addGithubAuthMethod = async (req, res, next) => {
         if (githubAuthUserExists)
             return res.status(409).send({ message: "This Github account already exists as an auth method." });
 
-        console.log(config);
         const emails = await getGithubEmails(config);
-        console.log(emails);
         const primaryEmail = emails.find(e => e.primary);
 
         const userId = req.user.userId;
@@ -199,7 +197,6 @@ const addGithubAuthMethod = async (req, res, next) => {
 
 const verifyEmail = async (req, res, next) => {
     try {
-        console.log("req");
         const { authorization } = req.headers;
         if (!authorization)
             return res.status(400).send({ message: "Please provide a Secret Key." });
@@ -254,7 +251,6 @@ const sendResetPasswordMail = async (req, res, next) => {
         const { verified, email_sent_at } = await getEmailVerificationByEmail(email);
         if (!verified)
             return res.status(409).send({ message: "Email not verified." });
-        console.log(email_sent_at);
         if (email_sent_at > new Date(Date.now() - 1000 * 60 * 1))
             return res.status(429).send({ message: "Too many Requests. Try in 1 minitue." });
 

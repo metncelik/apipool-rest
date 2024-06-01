@@ -14,7 +14,6 @@ const getAPIImage = async (req, res, next) => {
                 res.status(500).send('An error occurred');
             })
             .on('response', (response) => {
-                console.log("hebele");
                 res.set('Content-Type', 'image/jpeg');
             })
             .pipe(res);

@@ -85,7 +85,6 @@ export const asignCategoryToAPI = async (apiId, categoryId) => {
 
 export const addAPIInput = async (apiId, input) => {
     const { title, description, type, isRequired, defaultValue, isAdvanced } = input;
-    console.log(title);
     const queryString = `
     INSERT INTO api_inputs (api_id, title, description, type, is_required, default_value, is_advanced)
     VALUES ($1,$2,$3,$4,$5,$6,$7)`;
