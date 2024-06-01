@@ -24,7 +24,7 @@ export const revokeAPIKey = async (apiKey, userId) => {
 
 export const getRecentRequests = async (userId) => {
     const query = `
-    SELECT r.request_id, a.title AS api_title, e.title AS api_title, r.status, r.finished_at, r.started_at, r.delay_time, r.execution_time  
+    SELECT r.request_id, a.title AS api_key_title, e.title AS api_title, r.status, r.finished_at, r.started_at, r.delay_time, r.execution_time  
     FROM recent_requests r JOIN api_keys a ON r.api_key_id = a.api_key_id JOIN apis e ON e.api_id = r.api_id 
     WHERE a.user_id = $1
     ORDER BY r.started_at DESC

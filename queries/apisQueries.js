@@ -6,7 +6,7 @@ export const getPublicAPIs = async (offset, limit) => {
     FROM apis m
     WHERE m.api_id > $1 
     AND is_public = TRUE
-    ORDER BY m.api_id  LIMIT $2 
+    ORDER BY m.api_id ASC LIMIT $2 
     `;
     const values = [offset, limit];
     const result = await pgPool.query(queryString, values);
