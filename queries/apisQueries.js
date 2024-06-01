@@ -38,7 +38,13 @@ export const getFullAPI = async (alias) => {
 export const getAPIInputs = async (apiId) => {
     const queryString = `
     SELECT title, description, type, is_required, default_value
-    FROM api_inputs WHERE api_id = $1
+    FROM api_inputs WHERE api_id = $1 
+    ORDER BY 
+    CASE 
+      WHEN is_required = TRUE THEN 1
+      WHEN is_required = FALSE THEN 3
+      ELSE 2
+    END, title ASC;
     `;
     const values = [apiId];
     const result = await pgPool.query(queryString, values);
