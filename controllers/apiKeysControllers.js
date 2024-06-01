@@ -1,10 +1,11 @@
-import { insertAPIKey, getActiveAPIKeys, revokeAPIKey, getRecentRequests } from "../queries/apiKeysQueries.js";
+import { insertAPIKey, getActiveApiKeys, revokeAPIKey, getRecentRequests } from "../queries/apiKeysQueries.js";
 import { v4 as uuid } from "uuid";
+import { validateApiTitle } from "../utils/apiKeysUtils.js";
 
 
-export const getAPIKeys = async (req, res, next) => {
+export const getApiKeys = async (req, res, next) => {
     try {
-        const apiKeys = await getActiveAPIKeys(req.user.userId);
+        const apiKeys = await getActiveApiKeys(req.user.userId);
         res.send({ apiKeys });
     } catch (error) {
         next(error);
@@ -22,9 +23,9 @@ export const addAPIKey = async (req, res, next) => {
             return res.status(400).send({ message: "API Name must be between 3 and 20 characters." });
         }
 
-        const apiTitleRegex = /^[a-z][a-z0-9_-]*$/;
-        if (!apiTitleRegex.test(apiTitle)) {
-            return res.status(400).send("Invalid API Name. It should start with a lowercase letter or a number, and can contain lowercase letters, numbers, underscores, and hyphens.");
+        const errorMessage = validateApiTitle(apiTitle);
+        if (errorMessage) {
+            return res.status(400).send({ message: errorMessage });
         }
 
         const newAPIKey = "AP1-" + uuid();

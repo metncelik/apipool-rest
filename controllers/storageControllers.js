@@ -1,13 +1,13 @@
 import { bucket } from "../utils/cloudStorage.js";
 
-const getEndpointImage = async (req, res, next) => {
+const getAPIImage = async (req, res, next) => {
     try {
-        const { endpointId } = req.params;
-        if (!endpointId) return res.status(400).send({ message: "Invalid endpoint ID." });
-        const destination = `endpoints/images/${endpointId}.jpeg`
+        const { imageName } = req.params;
+        if (!imageName) return res.status(400).send({ message: "Invalid api ID." });
+        const destination = `apis/images/${imageName}`
         const image = bucket.file(destination);
         const [exists] = await image.exists();
-        if (!exists) return null;
+        if (!exists) return res.status(404).send({ message: "Image not found." });
         image.createReadStream()
             .on('error', (err) => {
                 console.error(err);
@@ -23,4 +23,4 @@ const getEndpointImage = async (req, res, next) => {
     }
 }
 
-export { getEndpointImage };
+export { getAPIImage };

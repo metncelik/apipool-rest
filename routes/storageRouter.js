@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { getEndpointImage } from "../controllers/storageControllers.js";
+import { getAPIImage } from "../controllers/storageControllers.js";
 
 const router = Router();
 
-router.get("/endpoints/images/:endpointId", getEndpointImage);
+router.get("/apis/images/:imageName", getAPIImage);
 
 export default router;

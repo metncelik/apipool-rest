@@ -17,10 +17,11 @@ const validateUserDataFormat = (req, res, next) => {
         res.status(400).send({ message: "Wrong email format!" });
         return;
     }
-    if (!isValidPassword(password)) {
-        res.status(400).send({ message: "Wrong password format!" });
-        return;
-    }
+    
+    const passwordErrorMessage = isValidPassword(password);
+    if (passwordErrorMessage) 
+        return res.status(400).send({ message: passwordErrorMessage });
+       
 
     req.email = email;
     req.password = password;

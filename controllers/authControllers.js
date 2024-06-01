@@ -279,8 +279,9 @@ const resetPassword = async (req, res, next) => {
         if (!password)
             return res.status(400).send({ message: "Please provide a new password." });
 
-        if (!isValidPassword(password))
-            return res.status(400).send({ message: "Wrong password format!" });
+        const passwordErrorMessage = isValidPassword(password);
+        if (passwordErrorMessage)
+            return res.status(400).send({ message: passwordErrorMessage });
 
         const hashedPassword = hashPassword(password);
 
@@ -311,7 +312,7 @@ const addEmailAuthMethod = async (req, res, next) => {
         const verifyURL = CLIENT_URL + `/verify-email?secretKey=${verifySecret}`;
         await sendEmail(req.email, "🎉 Welcome to API POOL!", verifyEmailTemplate(verifyURL));
 
-        res.send({ message: "Email Auth added." });
+        res.send({ message: "Email Auth added. Please check your email for verification." });
     } catch (error) {
         next(error);
     }
@@ -338,8 +339,9 @@ const changePassword = async (req, res, next) => {
         if (currentPassword == newPassword)
             return res.status(400).send({ message: "New password can not be the same as the current password." });
 
-        if (!isValidPassword(newPassword))
-            return res.status(400).send({ message: "Wrong password format!" });
+        const passwordErrorMessage = isValidPassword(password);
+        if (passwordErrorMessage)
+            return res.status(400).send({ message: passwordErrorMessage });
 
         const { email, hashed_password } = await getEmailAndPasswordByID(req.user.userId);
         const isPasswordCorrect = comparePasswords(currentPassword, hashed_password);
