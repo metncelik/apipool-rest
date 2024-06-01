@@ -41,7 +41,7 @@ export const getAPIsByAliasQuery = async (req, res, next) => {
         if (!aliasQuery) {
             return res.status(400).send({ message: "Please provide a alias query." });
         }
-        const apis = await queryAPIs('m.alias', aliasQuery);
+        const apis = await queryAPIs(aliasQuery);
         res.send({ apis: apis });
     } catch (error) {
         next(error);

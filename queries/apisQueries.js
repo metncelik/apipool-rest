@@ -6,7 +6,7 @@ export const getPublicAPIs = async (offset, limit) => {
     FROM apis m
     WHERE m.api_id > $1 
     AND is_public = TRUE
-    ORDER BY m.api_id ASC LIMIT $2 
+    ORDER BY m.api_id DESC LIMIT $2 
     `;
     const values = [offset, limit];
     const result = await pgPool.query(queryString, values);
@@ -55,11 +55,13 @@ export const getAPIOutputs = async (apiId) => {
     return result.rows;
 }
 
-export const queryAPIs = async (attribute, query) => {
+export const queryAPIs = async (query) => {
     const queryString = `
-    SELECT m.api_id, m.title as api_title,m.alias, m.description as category_title, m.image_url
-    FROM apis m 
-    WHERE ${attribute} LIKE $1`;
+    SELECT m.api_id, m.title as api_title, m.alias, m.description, m.image_url
+    FROM apis m
+    WHERE m.alias LIKE $1 OR m.title LIKE $1
+    ORDER BY m.api_id DESC
+    `;
     const values = [`%${query}%`];
     const result = await pgPool.query(queryString, values);
     return result.rows;
