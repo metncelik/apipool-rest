@@ -72,7 +72,8 @@ export const getAPI = async (req, res, next) => {
 export const addAPI = async (req, res, next) => {
     try {
         const { api, image, inputs, outputs, providers } = req.body;
-
+        if (/^[a-z](?:[a-z0-9\-]{6,25})$/.test(api.alias) === false) 
+            return res.status(400).send({ message: "Must be between 6 and 25 characters and start with a lowercase letter, and can contain just lowercase letters hypens(\"-\") and numbers"});
         const imagePath = `apis/images/${api.alias}`
         const imageExtension = ".jpeg";
 
