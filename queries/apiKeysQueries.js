@@ -7,6 +7,29 @@ export const getActiveApiKeys = async (userId) => {
     return result.rows;
 };
 
+export const getRequestsCountByHour = async (userId) => {
+    const query = `SELECT COUNT(*) AS count, r.status, DATE_TRUNC('hour', finished_at) AS hour 
+    FROM recent_requests r JOIN api_keys a ON r.api_key_id = a.api_key_id 
+    WHERE a.user_id = $1 AND r.status IN ('COMPLETED', 'FAILED')
+    GROUP BY hour, r.status 
+    ORDER BY hour ASC`;
+    const values = [userId];
+    const result = await pgPool.query(query, values);
+    console.log(result.rows);
+    return result.rows;
+};
+
+export const getDelayAndExecutionTimeByHour = async (userId) => {
+    const query = `SELECT ROUND(AVG(delay_time)) AS avg_delay, ROUND(AVG(execution_time)) AS avg_execution, DATE_TRUNC('hour', finished_at) AS hour 
+    FROM recent_requests r JOIN api_keys a ON r.api_key_id = a.api_key_id 
+    WHERE a.user_id = $1 AND r.status IN ('COMPLETED', 'FAILED')
+    GROUP BY hour 
+    ORDER BY hour ASC`;
+    const values = [userId];
+    const result = await pgPool.query(query, values);
+    return result.rows;
+}
+
 export const insertAPIKey = async (apiTitle, apiKey,userId) => {
     const query = `INSERT INTO api_keys (api_key, title, user_id) 
         VALUES ($1, $2, $3) RETURNING api_key, title, created_at`;
@@ -28,6 +51,7 @@ export const getRecentRequests = async (userId) => {
     FROM recent_requests r JOIN api_keys a ON r.api_key_id = a.api_key_id JOIN apis e ON e.api_id = r.api_id 
     WHERE a.user_id = $1
     ORDER BY r.started_at DESC
+    LIMIT 70
     `;
     const values = [userId];
     const result = await pgPool.query(query, values);

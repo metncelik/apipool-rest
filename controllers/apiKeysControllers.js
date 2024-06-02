@@ -1,4 +1,4 @@
-import { insertAPIKey, getActiveApiKeys, revokeAPIKey, getRecentRequests } from "../queries/apiKeysQueries.js";
+import { insertAPIKey, getActiveApiKeys, revokeAPIKey, getRecentRequests, getRequestsCountByHour, getDelayAndExecutionTimeByHour } from "../queries/apiKeysQueries.js";
 import { v4 as uuid } from "uuid";
 import { validateApiTitle } from "../utils/apiKeysUtils.js";
 
@@ -49,7 +49,9 @@ export const deleteAPIKey = async (req, res, next) => {
 export const getRequests = async (req, res, next) => {
     try {
         const recentRequests = await getRecentRequests(req.user.userId);
-        res.send({ requests: recentRequests });
+        const requestsByHour = await getRequestsCountByHour(req.user.userId);
+        const delayAndExecutionTimes = await getDelayAndExecutionTimeByHour(req.user.userId);
+        res.send({ requests: recentRequests, requestsByHour, delayAndExecutionTimes });
     } catch (error) {
         next(error);
     }

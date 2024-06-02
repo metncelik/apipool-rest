@@ -51,7 +51,6 @@ app.use((err, req, res, next) => {
         return res.status(400).send({ message: "Already exists!" });
     }
 
-    console.log(err);
     res.status(500).send({ message: err.toString() });
 });
 
