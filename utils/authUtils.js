@@ -1,4 +1,4 @@
-import { CLIENT_URL, COOKIE_DOMAIN, REFRESH_SECRET, cookieConfig } from "../config.js";
+import { REFRESH_SECRET, cookieConfig } from "../config.js";
 import { updateLoginDate, updateRefreshToken } from "../queries/authQueries.js";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
