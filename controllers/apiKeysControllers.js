@@ -1,4 +1,4 @@
-import { insertAPIKey, getActiveApiKeys, revokeAPIKey, getRecentRequests, getRequestsCountByHour, getDelayAndExecutionTimeByHour } from "../queries/apiKeysQueries.js";
+import { insertAPIKey, getActiveApiKeys, revokeAPIKey, getRecentRequests, getRequestsCountByHour, getDelayAndExecutionTimeByHour, getLastAPIKey } from "../queries/apiKeysQueries.js";
 import { v4 as uuid } from "uuid";
 import { validateApiTitle } from "../utils/apiKeysUtils.js";
 
@@ -12,15 +12,26 @@ export const getApiKeys = async (req, res, next) => {
     }
 };
 
+export const getOneAPIKey = async (req, res, next) => {
+    try {
+        let apiKey = await getLastAPIKey(req.user.userId);
+        if (!apiKey) {
+            const newAPIKey = "AP1-" + uuid();
+            const apiTitle = "default";
+            apiKey = (await insertAPIKey(apiTitle, newAPIKey, req.user.userId)).api_key;
+        }
+        res.send({ apiKey });
+    } catch (error) {
+        next(error);
+    }
+}
+
+
 export const addAPIKey = async (req, res, next) => {
     try {
         const apiTitle = req.body?.apiTitle;
         if (!apiTitle) {
             return res.status(400).send({ message: "Please provide an API Name." });
-        }
-
-        if (apiTitle.length < 3 || apiTitle.length > 15) {
-            return res.status(400).send({ message: "API Name must be between 3 and 20 characters." });
         }
 
         const errorMessage = validateApiTitle(apiTitle);
@@ -30,7 +41,7 @@ export const addAPIKey = async (req, res, next) => {
 
         const newAPIKey = "AP1-" + uuid();
         const apiKey = await insertAPIKey(apiTitle, newAPIKey, req.user.userId);
-        res.send({ apiKey, message: "API Key created."});
+        res.send({ apiKey, message: "API Key created." });
     } catch (error) {
         next(error);
     }

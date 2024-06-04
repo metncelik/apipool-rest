@@ -14,13 +14,21 @@ import indexRouter from './routes/indexRouter.js';
 
 const app = express();
 
+// app.use((req, res, next) => {
+//     res.header("Access-Control-Allow-Origin", CLIENT_URL);
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+//     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//     res.header("Access-Control-Allow-Credentials", true);
+//     next();
+// });
+
 app.use(cookieParser())
 app.use(cors({
     origin: CLIENT_URL,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true
 }));
-app.use(bodyParser.json({limit: "10mb"}));
+app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true, type: "application/json" }));
 app.use(setContentType);
 
@@ -47,9 +55,14 @@ app.use((err, req, res, next) => {
         });
     }
 
+    // psql err codes
     if (err.code === '23505') {
         return res.status(400).send({ message: "Already exists!" });
+    } else if (err.code === '22P02') {
+        return res.status(400).send({ message: "Invalid data type!" });
     }
+
+    console.log(err);
 
     res.status(500).send({ message: err.toString() });
 });

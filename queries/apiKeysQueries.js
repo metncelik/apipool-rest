@@ -7,6 +7,13 @@ export const getActiveApiKeys = async (userId) => {
     return result.rows;
 };
 
+export const getLastAPIKey = async (userId) => {
+    const query = `SELECT api_key FROM api_keys WHERE is_revoked = FALSE AND user_id = $1 LIMIT 1`;
+    const values = [userId];
+    const result = await pgPool.query(query, values);
+    return result.rows[0]?.api_key;
+};
+
 export const getRequestsCountByHour = async (userId) => {
     const query = `SELECT COUNT(*) AS count, r.status, DATE_TRUNC('hour', finished_at) AS hour 
     FROM recent_requests r JOIN api_keys a ON r.api_key_id = a.api_key_id 
@@ -30,7 +37,7 @@ export const getDelayAndExecutionTimeByHour = async (userId) => {
     return result.rows;
 }
 
-export const insertAPIKey = async (apiTitle, apiKey,userId) => {
+export const insertAPIKey = async (apiTitle, apiKey, userId) => {
     const query = `INSERT INTO api_keys (api_key, title, user_id) 
         VALUES ($1, $2, $3) RETURNING api_key, title, created_at`;
     const values = [apiKey, apiTitle, userId];
