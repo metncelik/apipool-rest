@@ -1,5 +1,14 @@
 import { X_SERVICE_URL } from "../config.js";
-import { addNewAPI, getPublicAPIs, getFullAPI, queryAPIs, getUserAPIsByID, deleteAPIByID, getAPIOutputs, getAPIInputs, addAPIInput, addAPIOutput, addAPIProvider, addRunpodAPI, getRunpodAccountByEmail, asignCategoryToAPI } from "../queries/apisQueries.js";
+import {
+    addNewAPI, getPublicAPIs,
+    getFullAPI, queryAPIs,
+    getUserAPIsByID, deleteAPIByID,
+    getAPIOutputs, getAPIInputs,
+    addAPIInput, addAPIOutput,
+    addAPIProvider, addRunpodAPI,
+    getRunpodAccountByEmail, asignCategoryToAPI,
+    getInputRelations, addInputRealtion
+} from "../queries/apisQueries.js";
 import { uploadImage } from "../utils/cloudStorage.js";
 
 export const getAPIs = async (req, res, next) => {
@@ -58,6 +67,10 @@ export const getAPI = async (req, res, next) => {
         if (!api)
             return res.status(404).send({ message: "API not found." });
         const apiInputs = await getAPIInputs(api.api_id);
+        for (const input of apiInputs) {
+            input.relations = await getInputRelations(input.input_id);
+        }
+
         const apiOutputs = await getAPIOutputs(api.api_id);
         api.inputs = apiInputs;
         api.outputs = apiOutputs;
@@ -72,8 +85,8 @@ export const getAPI = async (req, res, next) => {
 export const addAPI = async (req, res, next) => {
     try {
         const { api, image, inputs, outputs, providers } = req.body;
-        if (/^[a-z](?:[a-z0-9\-]{6,25})$/.test(api.alias) === false) 
-            return res.status(400).send({ message: "Must be between 6 and 25 characters and start with a lowercase letter, and can contain just lowercase letters hypens(\"-\") and numbers"});
+        if (/^[a-z](?:[a-z0-9\-]{6,25})$/.test(api.alias) === false)
+            return res.status(400).send({ message: "Must be between 6 and 25 characters and start with a lowercase letter, and can contain just lowercase letters hypens(\"-\") and numbers" });
         const imagePath = `apis/images/${api.alias}`
         const imageExtension = ".jpeg";
 
@@ -107,6 +120,31 @@ export const addAPI = async (req, res, next) => {
         next(error);
     }
 };
+
+export const addApiInputs = async (req, res, next) => {
+    try {
+        const { apiId, inputs } = req.body;
+        for (const input of inputs) {
+            await addAPIInput(apiId, input);
+        }
+        res.send({ message: "Inputs added." });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const addApiOutputs = async (req, res, next) => {
+    try {
+        const { apiId, outputs } = req.body;
+        for (const output of outputs) {
+            await addAPIOutput(apiId, output);
+        }
+        res.send({ message: "Outputs added." });
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 export const deleteAPI = async (req, res, next) => {
     try {

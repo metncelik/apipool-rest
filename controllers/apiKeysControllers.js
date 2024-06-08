@@ -1,4 +1,12 @@
-import { insertAPIKey, getActiveApiKeys, revokeAPIKey, getRecentRequests, getRequestsCountByHour, getDelayAndExecutionTimeByHour, getLastAPIKey } from "../queries/apiKeysQueries.js";
+import {
+    insertAPIKey,
+    getActiveApiKeys,
+    revokeAPIKey,
+    getRecentRequests,
+    getRequestsCountByHour,
+    getDelayAndExecutionTimeByHour,
+    getLastAPIKey
+} from "../queries/apiKeysQueries.js";
 import { v4 as uuid } from "uuid";
 import { validateApiTitle } from "../utils/apiKeysUtils.js";
 

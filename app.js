@@ -14,14 +14,6 @@ import indexRouter from './routes/indexRouter.js';
 
 const app = express();
 
-// app.use((req, res, next) => {
-//     res.header("Access-Control-Allow-Origin", CLIENT_URL);
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-//     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-//     res.header("Access-Control-Allow-Credentials", true);
-//     next();
-// });
-
 app.use(cookieParser())
 app.use(cors({
     origin: CLIENT_URL,
@@ -63,8 +55,17 @@ app.use((err, req, res, next) => {
     }
 
     console.log(err);
-
     res.status(500).send({ message: err.toString() });
+});
+
+process.on('uncaughtException', (err) => {
+    console.log('uncaughtException', err);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (err) => { 
+    console.log('unhandledRejection', err);
+    process.exit(1);
 });
 
 app.listen(PORT, () => {

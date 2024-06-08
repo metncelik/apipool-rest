@@ -37,7 +37,7 @@ export const getFullAPI = async (alias) => {
 
 export const getAPIInputs = async (apiId) => {
     const queryString = `
-    SELECT title, description, type, is_required, default_value, is_advanced
+    SELECT title, description, type, is_required, default_value, is_advanced, input_id
     FROM api_inputs WHERE api_id = $1 
     ORDER BY 
     CASE 
@@ -47,6 +47,27 @@ export const getAPIInputs = async (apiId) => {
     END, input_id ASC;
     `;
     const values = [apiId];
+    const result = await pgPool.query(queryString, values);
+    console.log(result.rows);
+    return result.rows;
+}
+
+export const addInputRealtion = async (inputId, relatedInputId, relationType, relatedValue) => {
+    const queryString = `
+    INSERT INTO input_relations (input_id, related_input_id, relation_type, related_value)
+    VALUES ($1,$2,$3,$4)`;
+    const values = [inputId, relatedInputId, relationType, relatedValue];
+    return await pgPool.query(queryString, values);
+}
+
+export const getInputRelations = async (inputId) => {
+    const queryString = `
+    SELECT ire.relation_type, ire.related_value, ri.title AS related_input_title
+    FROM input_relations ire JOIN api_inputs i ON ire.related_input_id = i.input_id 
+    JOIN api_inputs ri ON ire.related_input_id = ri.input_id
+    WHERE ire.input_id = $1
+    `;
+    const values = [inputId];
     const result = await pgPool.query(queryString, values);
     return result.rows;
 }
