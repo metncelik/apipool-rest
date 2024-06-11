@@ -116,6 +116,7 @@ export const addAPI = async (req, res, next) => {
                     await addRunpodAPI(apiProviderId, provider.endpointId, rpAccount.account_id);
                 } else if (provider.title === "stability") {
                     const sbAccount = await getStabilityAccountByEmail(provider.email);
+                    console.log(sbAccount, "sbAccount");
                     await addStabilityAPI(apiProviderId, provider.modelId, sbAccount.account_id);
                 }
             }

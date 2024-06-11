@@ -172,7 +172,7 @@ export const getStabilityAccountByEmail = async (email) => {
     SELECT account_id FROM stability_accounts WHERE email = $1`;
     const values = [email];
     const result = await pgPool.query(queryString, values);
-    return result.rows;
+    return result.rows[0];
 }
 
 export const addStabilityAPI = async (apiProviderId, sbModelId, sbAccountId) => {
