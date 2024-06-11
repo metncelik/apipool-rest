@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { v4 as uuid } from 'uuid';
-import { ACCESS_SECRET, CLIENT_URL, COOKIE_DOMAIN, X_SERVICE_URL, resetYourPasswordTemplate, verifyEmailTemplate } from '../config.js';
+import { ACCESS_SECRET, ACCESS_TOKEN_TTL, CLIENT_URL, COOKIE_DOMAIN, X_SERVICE_URL, resetYourPasswordTemplate, verifyEmailTemplate } from '../config.js';
 import { createRefreshToken, hashPassword, isValidPassword, setCookies, comparePasswords } from '../utils/authUtils.js';
 import { sendEmail } from '../utils/mailService.js';
 import { getGoogleUserInfo } from '../apis/google.js';
@@ -71,7 +71,7 @@ const login = async (req, res, next) => {
 
 const refresh = async (req, res, next) => {
     try {
-        const accessTokenOptions = { expiresIn: `15m` }
+        const accessTokenOptions = { expiresIn: ACCESS_TOKEN_TTL }
         const accessToken = jwt.sign(req.user, ACCESS_SECRET, accessTokenOptions);
         return res.send({ accessToken });
     } catch (error) {

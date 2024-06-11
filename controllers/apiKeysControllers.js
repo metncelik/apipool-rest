@@ -22,6 +22,7 @@ export const getApiKeys = async (req, res, next) => {
 
 export const getOneAPIKey = async (req, res, next) => {
     try {
+        console.log("getOneAPIKey");
         let apiKey = await getLastAPIKey(req.user.userId);
         if (!apiKey) {
             const newAPIKey = "AP1-" + uuid();

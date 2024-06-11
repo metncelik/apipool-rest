@@ -7,7 +7,10 @@ import {
     addAPIInput, addAPIOutput,
     addAPIProvider, addRunpodAPI,
     getRunpodAccountByEmail, asignCategoryToAPI,
-    getInputRelations, addInputRealtion
+    getInputRelations, addInputRealtion,
+    getStabilityAccountByEmail,
+    addStabilityAPI,
+    getAPIInputId
 } from "../queries/apisQueries.js";
 import { uploadImage } from "../utils/cloudStorage.js";
 
@@ -86,36 +89,43 @@ export const addAPI = async (req, res, next) => {
     try {
         const { api, image, inputs, outputs, providers } = req.body;
         if (/^[a-z](?:[a-z0-9\-]{6,25})$/.test(api.alias) === false)
-            return res.status(400).send({ message: "Must be between 6 and 25 characters and start with a lowercase letter, and can contain just lowercase letters hypens(\"-\") and numbers" });
+            return res.status(400).send({ message: "Model alias must be between 6 and 25 characters and start with a lowercase letter, and can contain just lowercase letters hypens(\"-\") and numbers" });
         const imagePath = `apis/images/${api.alias}`
         const imageExtension = ".jpeg";
 
         const userId = req.user.userId;
         api.imageURL = X_SERVICE_URL + "/storage/" + imagePath + imageExtension;
         const apiId = await addNewAPI(api, userId);
+        try {
+            await asignCategoryToAPI(apiId, api.categoryId);
 
-        await asignCategoryToAPI(apiId, api.categoryId);
+            await uploadImage(image, imagePath + imageExtension);
 
-        await uploadImage(image, imagePath + imageExtension);
-
-        for (const input of inputs) {
-            await addAPIInput(apiId, input);
-        }
-
-        for (const output of outputs) {
-            await addAPIOutput(apiId, output);
-        }
-
-        for (const provider of providers) {
-            const apiProviderId = await addAPIProvider(apiId, provider.title)
-            if (provider.title === "runpod") {
-                const rpAccounts = await getRunpodAccountByEmail(provider.email);
-                const rpAccountId = rpAccounts[Math.floor(Math.random(0, 1) * rpAccounts.length)].account_id;
-                await addRunpodAPI(apiProviderId, provider.apiId, rpAccountId);
+            for (const input of inputs) {
+                await addAPIInput(apiId, input);
             }
-        }
 
-        res.send({ message: "API added.", apiId });
+            for (const output of outputs) {
+                await addAPIOutput(apiId, output);
+            }
+
+            for (const provider of providers) {
+                const apiProviderId = await addAPIProvider(apiId, provider.title)
+                if (provider.title === "runpod") {
+                    const rpAccount = await getRunpodAccountByEmail(provider.email);
+                    await addRunpodAPI(apiProviderId, provider.endpointId, rpAccount.account_id);
+                } else if (provider.title === "stability") {
+                    const sbAccount = await getStabilityAccountByEmail(provider.email);
+                    await addStabilityAPI(apiProviderId, provider.modelId, sbAccount.account_id);
+                }
+            }
+
+            res.send({ message: "API added.", apiId });
+
+        } catch (error) {
+            deleteAPIByID(apiId, userId);
+            throw error;
+        }
     } catch (error) {
         next(error);
     }
@@ -128,6 +138,21 @@ export const addApiInputs = async (req, res, next) => {
             await addAPIInput(apiId, input);
         }
         res.send({ message: "Inputs added." });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const addInputRealtions = async (req, res, next) => {
+    try {
+        const { apiAlias, relations } = req.body;
+        for (const relation of relations) {
+            relation.inputId = await getAPIInputId(apiAlias, relation.inputTitle);
+            relation.relatedInputId = await getAPIInputId(apiAlias, relation.relatedInputTitle);
+            console.log(relation, "relation");
+            await addInputRealtion(relation);
+        }
+        res.send({ message: "Relations added." });
     } catch (error) {
         next(error);
     }

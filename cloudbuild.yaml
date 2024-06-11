@@ -12,6 +12,7 @@ steps:
       - "CLIENT_URL=${_CLIENT_URL}"
       - "PORT=${_PORT}"
       - "ACCESS_SECRET=${_ACCESS_SECRET}"
+      - "ACCESS_TOKEN_TTL=${_ACCESS_TOKEN_TTL}"
       - "REFRESH_SECRET=${_REFRESH_SECRET}"
       - "EMAIL_PROVIDER=${_EMAIL_PROVIDER}"
       - "EMAIL=${_EMAIL}"

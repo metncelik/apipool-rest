@@ -49,6 +49,7 @@ app.use((err, req, res, next) => {
 
     // psql err codes
     if (err.code === '23505') {
+        console.log(err);
         return res.status(400).send({ message: "Already exists!" });
     } else if (err.code === '22P02') {
         return res.status(400).send({ message: "Invalid data type!" });

@@ -42,7 +42,6 @@ export const getAPIInputs = async (apiId) => {
     ORDER BY 
     CASE 
       WHEN is_required = TRUE THEN 1
-      WHEN is_required = FALSE THEN 3
       ELSE 2
     END, input_id ASC;
     `;
@@ -52,17 +51,29 @@ export const getAPIInputs = async (apiId) => {
     return result.rows;
 }
 
-export const addInputRealtion = async (inputId, relatedInputId, relationType, relatedValue) => {
+export const getAPIInputId = async (apiAlias, inputTitle) => {
     const queryString = `
-    INSERT INTO input_relations (input_id, related_input_id, relation_type, related_value)
-    VALUES ($1,$2,$3,$4)`;
-    const values = [inputId, relatedInputId, relationType, relatedValue];
+    SELECT ai.input_id
+    FROM api_inputs ai
+    JOIN apis a ON a.api_id = ai.api_id
+    WHERE a.alias = $1 AND ai.title = $2
+    `;
+    const values = [apiAlias, inputTitle];
+    const result = await pgPool.query(queryString, values);
+    return result.rows[0].input_id;
+}
+
+export const addInputRealtion = async ({ inputId, relatedInputId, relationType, relatedValue, relationAction }) => {
+    const queryString = `
+    INSERT INTO input_relations (input_id, related_input_id, relation_type, related_value,action)
+    VALUES ($1,$2,$3,$4,$5)`;
+    const values = [inputId, relatedInputId, relationType, relatedValue, relationAction];
     return await pgPool.query(queryString, values);
 }
 
 export const getInputRelations = async (inputId) => {
     const queryString = `
-    SELECT ire.relation_type, ire.related_value, ri.title AS related_input_title
+    SELECT ire.relation_type, ire.related_value, ri.title AS related_input_title, ire.action as relation_action
     FROM input_relations ire JOIN api_inputs i ON ire.related_input_id = i.input_id 
     JOIN api_inputs ri ON ire.related_input_id = ri.input_id
     WHERE ire.input_id = $1
@@ -140,11 +151,11 @@ export const addAPIProvider = async (apiId, title) => {
     return result.rows[0].api_provider_id
 }
 
-export const addRunpodAPI = async (apiProviderId, rpAPIId, rpAccountId) => {
+export const addRunpodAPI = async (apiProviderId, rpEndpointId, rpAccountId) => {
     const queryString = `
-    INSERT INTO runpod_apis (api_provider_id, rp_api_id, rp_account_id)
+    INSERT INTO runpod_apis (api_provider_id, rp_endpoint_id, rp_account_id)
     VALUES ($1, $2, $3)`;
-    const values = [apiProviderId, rpAPIId, rpAccountId]
+    const values = [apiProviderId, rpEndpointId, rpAccountId]
     return await pgPool.query(queryString, values);
 }
 
@@ -153,7 +164,23 @@ export const getRunpodAccountByEmail = async (email) => {
     SELECT account_id FROM runpod_accounts WHERE email = $1`;
     const values = [email];
     const result = await pgPool.query(queryString, values);
+    return result.rows[0];
+}
+
+export const getStabilityAccountByEmail = async (email) => {
+    const queryString = `
+    SELECT account_id FROM stability_accounts WHERE email = $1`;
+    const values = [email];
+    const result = await pgPool.query(queryString, values);
     return result.rows;
+}
+
+export const addStabilityAPI = async (apiProviderId, sbModelId, sbAccountId) => {
+    const queryString = `
+    INSERT INTO stability_apis (api_provider_id, sb_model_id, sb_account_id)
+    VALUES ($1, $2, $3)`;
+    const values = [apiProviderId, sbModelId, sbAccountId];
+    return await pgPool.query(queryString, values);
 }
 
 export const deleteAPIByID = async (apiId, userId) => {

@@ -2,7 +2,8 @@ import { Router } from 'express';
 import {
     addAPI, getAPIs,
     getAPI, getAPIsByAliasQuery,
-    getMyAPIs, deleteAPI
+    getMyAPIs, deleteAPI,
+    addInputRealtions
 } from '../controllers/apisControllers.js';
 import authorization, { isAdmin } from '../middlewares/authorization.js';
 
@@ -13,8 +14,8 @@ router.get("/my-apis", authorization, getMyAPIs);
 router.get("/by-alias/:alias", getAPI);
 router.get("/query-alias/", getAPIsByAliasQuery);
 router.post("/", authorization, isAdmin, addAPI);
-router.post("/input", authorization, isAdmin, addAPI);
-router.post("/input/relations", authorization, isAdmin, addAPI);
+router.post("/inputs", authorization, isAdmin, addAPI);
+router.post("/inputs/relations", authorization, isAdmin, addInputRealtions);
 router.delete("/:apiId", authorization, deleteAPI);
 
 export default router;

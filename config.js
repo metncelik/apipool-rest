@@ -3,6 +3,7 @@ export const X_SERVICE_URL = process.env.X_SERVICE_URL;
 export const CLIENT_URL = process.env.CLIENT_URL;
 export const PORT = process.env.PORT || 5003;
 export const ACCESS_SECRET = process.env.ACCESS_SECRET;
+export const ACCESS_TOKEN_TTL = process.env.ACCESS_TOKEN_TTL;
 export const REFRESH_SECRET = process.env.REFRESH_SECRET;
 export const EMAIL = process.env.EMAIL;
 export const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
