@@ -31,6 +31,8 @@ export const getAPIs = async (req, res, next) => {
         if (apis.length > 0) {
             lastOffset = apis[apis.length - 1].api_id;
         };
+
+        res.set('Cache-Control', 'public, max-age=18000');
         res.send({ apis: apis, lastOffset: lastOffset });
     } catch (error) {
         next(error);
@@ -79,6 +81,8 @@ export const getAPI = async (req, res, next) => {
         api.outputs = apiOutputs;
         if (!api)
             return res.status(404).send({ message: "API not found." });
+
+        res.set('Cache-Control', 'public, max-age=18000');
         res.send({ api: api });
     } catch (error) {
         next(error);

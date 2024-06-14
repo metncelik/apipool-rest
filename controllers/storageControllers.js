@@ -1,5 +1,7 @@
 import { bucket } from "../utils/cloudStorage.js";
 
+
+
 const getAPIImage = async (req, res, next) => {
     try {
         const { imageName } = req.params;
@@ -15,6 +17,7 @@ const getAPIImage = async (req, res, next) => {
             })
             .on('response', (response) => {
                 res.set('Content-Type', 'image/jpeg');
+                res.set('Cache-Control', 'public, max-age=7776000');
             })
             .pipe(res);
     } catch (error) {

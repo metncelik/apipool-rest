@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { setContentType } from './middlewares/setContentType.js';
+import setContentType from './middlewares/setContentType.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser'
 import { CLIENT_URL, PORT } from './config.js';
@@ -11,6 +11,7 @@ import apisRouter from './routes/apisRoute.js';
 import apiKeysRouter from './routes/apiKeysRoute.js';
 import storageRouter from './routes/storageRouter.js';
 import indexRouter from './routes/indexRouter.js';
+import errorhandler from './middlewares/errorHandler.js';
 
 const app = express();
 
@@ -34,37 +35,14 @@ app.use("/storage", express.static("public"), storageRouter);
 
 app.use("*", (req, res) => res.status(404).send({ message: "Not found" }));
 
-app.use((err, req, res, next) => {
-    if (err.name == "JsonWebTokenError") {
-        return res.status(401).send({
-            message: "Refresh token is invalid. (jwt)",
-        });
-    }
-
-    if (err.name == "TokenExpiredError") {
-        return res.status(401).send({
-            message: "Token expired.",
-        });
-    }
-
-    // psql err codes
-    if (err.code === '23505') {
-        console.log(err);
-        return res.status(400).send({ message: "Already exists!" });
-    } else if (err.code === '22P02') {
-        return res.status(400).send({ message: "Invalid data type!" });
-    }
-
-    console.log(err);
-    res.status(500).send({ message: err.toString() });
-});
+app.use(errorhandler);
 
 process.on('uncaughtException', (err) => {
     console.log('uncaughtException', err);
     process.exit(1);
 });
 
-process.on('unhandledRejection', (err) => { 
+process.on('unhandledRejection', (err) => {
     console.log('unhandledRejection', err);
     process.exit(1);
 });
