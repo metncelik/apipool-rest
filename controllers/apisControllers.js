@@ -17,20 +17,18 @@ import { uploadImage } from "../utils/cloudStorage.js";
 export const getAPIs = async (req, res, next) => {
     try {
         const offset = req.query?.offset;
-        if (!offset || isNaN(offset)) {
+        if (!offset || isNaN(offset))
             return res.status(400).send({ message: "Invalid offset." });
-        };
 
         const limit = req.query.limit;
-        if (!limit || limit < 0 || limit > 21) {
+        if (!limit || limit < 0 || limit > 21)
             return res.status(400).send({ message: "Invalid limit." });
-        };
 
         const apis = await getPublicAPIs(offset, limit);
         let lastOffset = 0;
-        if (apis.length > 0) {
+        if (apis.length > 0)
             lastOffset = apis[apis.length - 1].api_id;
-        };
+
 
         res.set('Cache-Control', 'public, max-age=18000');
         res.send({ apis: apis, lastOffset: lastOffset });
@@ -52,9 +50,9 @@ export const getMyAPIs = async (req, res, next) => {
 export const getAPIsByQuery = async (req, res, next) => {
     try {
         const aliasQuery = req.query?.alias;
-        if (!aliasQuery) {
+        if (!aliasQuery)
             return res.status(400).send({ message: "Please provide a alias query." });
-        }
+
         const apis = await queryAPIs(aliasQuery);
 
         res.set('Cache-Control', 'public, max-age=18000');
@@ -74,9 +72,9 @@ export const getAPI = async (req, res, next) => {
         if (!api)
             return res.status(404).send({ message: "API not found." });
         const apiInputs = await getAPIInputs(api.api_id);
-        for (const input of apiInputs) {
+        for (const input of apiInputs)
             input.relations = await getInputRelations(input.input_id);
-        }
+
 
         const apiOutputs = await getAPIOutputs(api.api_id);
         api.inputs = apiInputs;
@@ -141,9 +139,9 @@ export const addAPI = async (req, res, next) => {
 export const addApiInputs = async (req, res, next) => {
     try {
         const { apiId, inputs } = req.body;
-        for (const input of inputs) {
+        for (const input of inputs)
             await addAPIInput(apiId, input);
-        }
+
         res.send({ message: "Inputs added." });
     } catch (error) {
         next(error);
@@ -168,9 +166,9 @@ export const addInputRealtions = async (req, res, next) => {
 export const addApiOutputs = async (req, res, next) => {
     try {
         const { apiId, outputs } = req.body;
-        for (const output of outputs) {
+        for (const output of outputs)
             await addAPIOutput(apiId, output);
-        }
+
         res.send({ message: "Outputs added." });
     } catch (error) {
         next(error);
@@ -184,7 +182,7 @@ export const deleteAPI = async (req, res, next) => {
         if (isNaN(apiId))
             return res.status(400).send({ message: "Invalid api id." });
 
-        const api = await deleteAPIByID(apiId, req.user.userId);
+        await deleteAPIByID(apiId, req.user.userId);
         res.send({ message: "API deleted successfully." });
     } catch (error) {
         next(error);

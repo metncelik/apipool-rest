@@ -98,6 +98,7 @@ export const queryAPIs = async (query) => {
     SELECT m.api_id, m.title as api_title, m.alias, m.description, m.image_url
     FROM apis m
     WHERE m.alias LIKE $1 OR m.title LIKE $1
+    AND is_public = TRUE
     ORDER BY m.api_id DESC
     `;
     const values = [`%${query}%`];
