@@ -4,7 +4,7 @@ export const getPublicAPIs = async (offset, limit) => {
     const queryString = `
     SELECT  api_id, m.title as api_title, m.alias, m.description,  m.image_url 
     FROM apis m
-    WHERE m.api_id > $1 
+    WHERE m.api_id < $1 
     AND is_public = TRUE
     ORDER BY m.api_id DESC LIMIT $2 
     `;

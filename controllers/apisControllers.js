@@ -49,13 +49,15 @@ export const getMyAPIs = async (req, res, next) => {
     }
 }
 
-export const getAPIsByAliasQuery = async (req, res, next) => {
+export const getAPIsByQuery = async (req, res, next) => {
     try {
         const aliasQuery = req.query?.alias;
         if (!aliasQuery) {
             return res.status(400).send({ message: "Please provide a alias query." });
         }
         const apis = await queryAPIs(aliasQuery);
+
+        res.set('Cache-Control', 'public, max-age=18000');
         res.send({ apis: apis });
     } catch (error) {
         next(error);

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
     addAPI, getAPIs,
-    getAPI, getAPIsByAliasQuery,
+    getAPI, getAPIsByQuery,
     getMyAPIs, deleteAPI,
     addInputRealtions
 } from '../controllers/apisControllers.js';
@@ -12,7 +12,7 @@ const router = Router();
 router.get("/", getAPIs);
 router.get("/my-apis", authorization, getMyAPIs);
 router.get("/by-alias/:alias", getAPI);
-router.get("/query-alias/", getAPIsByAliasQuery);
+router.get("/query/", getAPIsByQuery);
 router.post("/", authorization, isAdmin, addAPI);
 router.post("/inputs", authorization, isAdmin, addAPI);
 router.post("/inputs/relations", authorization, isAdmin, addInputRealtions);
