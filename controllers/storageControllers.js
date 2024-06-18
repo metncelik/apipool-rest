@@ -1,11 +1,10 @@
-import { bucket } from "../utils/cloudStorage.js";
+import { X_SERVICE_URL } from "../config.js";
+import { updateAPIByIdOrAlias } from "../queries/apisQueries.js";
+import { bucket, uploadImage } from "../utils/cloudStorage.js";
 
-
-
-const getAPIImage = async (req, res, next) => {
+export const getAPIImage = async (req, res, next) => {
     try {
         const { imageName } = req.params;
-        if (!imageName) return res.status(400).send({ message: "Invalid api ID." });
         const destination = `apis/images/${imageName}`
         const image = bucket.file(destination);
         const [exists] = await image.exists();
@@ -23,6 +22,22 @@ const getAPIImage = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-}
+};
 
-export { getAPIImage };
+export const uploadAPIImage = async (req, res, next) => {
+    try {
+        const base64 = req.body.image;
+        if (!base64) return res.status(400).send({ message: "Image is required." });
+        const { apiAlias } = req.params;
+        if (!apiAlias) return res.status(400).send({ message: "API alias is required." });
+        const imagePath = `apis/images/${apiAlias}`
+        const imageExtension = ".jpeg";
+        const destination = imagePath + imageExtension;
+        await uploadImage(base64, destination);
+        const imageURL = X_SERVICE_URL + "/storage/" + destination;
+        await updateAPIByIdOrAlias(apiAlias, { imageURL: imageURL }, false);
+        res.send({ imageURL });
+    } catch (error) {
+        next(error);
+    }
+};

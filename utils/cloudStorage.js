@@ -7,15 +7,15 @@ const storage = new Storage(storageConfig);
 const bucket = storage.bucket('apipool-storage');
 
 
-const uploadFile = async (buffer, destination) => {
-    const image = sharp(buffer).jpeg().resize(512, 512).toBuffer();
+const uploadFile = async (file, destination) => {
     const newFile = bucket.file(destination);
-    return newFile.save(image);
+    return newFile.save(file);
 }
 
 const uploadImage = async (base64, destination) => {
     const buffer = Buffer.from(base64, 'base64');
-    return await uploadFile(buffer, destination);
+    const image = sharp(buffer).jpeg().resize(512, 512).toBuffer();
+    return await uploadFile(image, destination);
 }
 
 const downloadFile = async (destination) => {

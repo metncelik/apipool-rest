@@ -10,7 +10,8 @@ import {
     getInputRelations, addInputRealtion,
     getStabilityAccountByEmail,
     addStabilityAPI,
-    getAPIInputId
+    getAPIInputId,
+    updateAPIByIdOrAlias
 } from "../queries/apisQueries.js";
 import { uploadImage } from "../utils/cloudStorage.js";
 
@@ -175,6 +176,15 @@ export const addApiOutputs = async (req, res, next) => {
     }
 };
 
+export const updateAPI = async (req, res, next) => {
+    try {
+        const { apiId, api } = req.body;
+        await updateAPIByIdOrAlias(apiId, api, true);
+        res.send({ message: "API updated." });
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const deleteAPI = async (req, res, next) => {
     try {

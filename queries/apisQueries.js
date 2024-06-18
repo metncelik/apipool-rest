@@ -184,6 +184,42 @@ export const addStabilityAPI = async (apiProviderId, sbModelId, sbAccountId) => 
     return await pgPool.query(queryString, values);
 }
 
+export const updateAPIByIdOrAlias = async (identifier, api, updateById = true) => {
+    let queryParts = [];
+    let values = [];
+    let paramIndex = 1;
+
+    if ('title' in api) {
+        queryParts.push(`title = $${paramIndex++}`);
+        values.push(api.title);
+    }
+    if ('description' in api) {
+        queryParts.push(`description = $${paramIndex++}`);
+        values.push(api.description);
+    }
+    if ('alias' in api) {
+        queryParts.push(`alias = $${paramIndex++}`);
+        values.push(api.alias);
+    }
+    if ('imageURL' in api) {
+        queryParts.push(`image_url = $${paramIndex++}`);
+        values.push(api.imageURL);
+    }
+
+    if (queryParts.length === 0) {
+        throw new Error("No valid fields provided for update.");
+    }
+
+    values.push(identifier);
+    const whereClause = updateById ? `api_id = $${paramIndex}` : `alias = $${paramIndex}`;
+    const queryString = `
+    UPDATE apis
+    SET ${queryParts.join(', ')}
+    WHERE ${whereClause}`;
+
+    return await pgPool.query(queryString, values);
+}
+
 export const deleteAPIByID = async (apiId, userId) => {
     const queryString = `
     DELETE FROM apis WHERE api_id = $1 AND user_id = $2`;
